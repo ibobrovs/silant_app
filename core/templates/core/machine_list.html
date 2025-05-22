@@ -1,0 +1,31 @@
+<h2>Список машин</h2>
+<table border="1">
+  <thead>
+    <tr>
+      <th>Модель</th>
+      <th>Заводской №</th>
+      <th>Дата отгрузки</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for machine in machines %}
+      <tr onclick="window.location.href='{% url 'machine_detail' machine.pk %}'" style="cursor: pointer;">
+        <td>{{ machine.model }}</td>
+        <td>{{ machine.serial_number }}</td>
+        <td>{{ machine.shipment_date }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>Детальная информация о машине</h2>
+<table border="1">
+  <tr><td>Модель</td><td>{{ machine.model }}</td></tr>
+  <tr><td>Зав. №</td><td>{{ machine.serial_number }}</td></tr>
+  <tr><td>Модель двигателя</td><td>{{ machine.engine_model }}</td></tr>
+  <tr><td>Модель трансмиссии</td><td>{{ machine.transmission_model }}</td></tr>
+  <tr><td>Дата отгрузки</td><td>{{ machine.shipment_date }}</td></tr>
+  <tr><td>Клиент</td><td>{{ machine.client.username }}</td></tr>
+</table>
+
+<p><a href="{% url 'machine_list' %}">Назад к списку</a></p>
