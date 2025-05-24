@@ -15,4 +15,7 @@ urlpatterns = [
 
     path('claims/', views.claim_list, name='claim_list'),
     path('claims/<int:pk>/', views.claim_detail, name='claim_detail'),
+
+    path('maintenance/add/', views.add_maintenance, name='add_maintenance'),
+
 ]

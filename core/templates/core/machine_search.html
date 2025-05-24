@@ -1,0 +1,24 @@
+<h2>Поиск машины по заводскому номеру</h2>
+
+<form method="get">
+  <label>Зав. номер:</label>
+  <input type="text" name="serial" value="{{ query|default:'' }}">
+  <button type="submit">Поиск</button>
+</form>
+
+{% if machine %}
+  <h3>Информация о машине:</h3>
+  <table border="1">
+    <tr><td>Модель</td><td>{{ machine.model }}</td></tr>
+    <tr><td>Двигатель</td><td>{{ machine.engine_model }}</td></tr>
+    <tr><td>Трансмиссия</td><td>{{ machine.transmission_model }}</td></tr>
+    <tr><td>Ведущий мост</td><td>{{ machine.drive_axle_model }}</td></tr>
+    <tr><td>Управляемый мост</td><td>{{ machine.steered_axle_model }}</td></tr>
+    <tr><td>Дата отгрузки</td><td>{{ machine.shipment_date }}</td></tr>
+    <tr><td>Местоположение</td><td>{{ machine.location }}</td></tr>
+    <tr><td>Клиент</td><td>{{ machine.customer }}</td></tr>
+    <tr><td>Доп. оборудование</td><td>{{ machine.additional_equipment }}</td></tr>
+  </table>
+{% elif not_found %}
+  <p style="color: red;">Машина с таким заводским номером не найдена.</p>
+{% endif %}
