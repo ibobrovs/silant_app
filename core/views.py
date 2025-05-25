@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import (Machine, Maintenance, Claim, ModelType, EngineModel, TransmissionModel, 
                      DriveAxleModel, SteeredAxleModel, TOType, ServiceCompany, FailureNode, RecoveryMethod)
 from django.http import HttpResponseForbidden
-from .forms import MaintenanceForm
+from .forms import MaintenanceForm, ClaimForm
 
 def index(request):
     return render(request, 'core/index.html')
@@ -167,6 +167,29 @@ def claim_detail(request, pk):
     item = get_object_or_404(Claim, pk=pk)
     return render(request, 'core/claim_detail.html', {'item': item})
 
+@login_required
+def add_claim(request):
+    user = request.user
+
+    if not user.groups.filter(name__in=['Клиент', 'Сервисная компания']).exists():
+        return HttpResponseForbidden("У вас нет прав на добавление рекламации.")
+
+    if request.method == 'POST':
+        form = ClaimForm(request.POST)
+        if form.is_valid():
+            claim = form.save(commit=False)
+
+            if user.groups.filter(name='Клиент').exists() and claim.machine.client != user:
+                return HttpResponseForbidden("Это не ваша техника.")
+            if user.groups.filter(name='Сервисная компания').exists() and claim.machine.service_company != user:
+                return HttpResponseForbidden("Это не ваша техника.")
+
+            claim.save()
+            return redirect('claim_list')
+    else:
+        form = ClaimForm()
+
+    return render(request, 'core/add_claim.html', {'form': form})
 
 # ------------------------
 #     Роли (пример)
