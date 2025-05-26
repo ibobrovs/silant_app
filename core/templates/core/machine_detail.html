@@ -1,4 +1,17 @@
 <h2>Детальная информация о машине</h2>
+
+{% if user.is_authenticated and user.groups.first.name == 'Менеджер' %}
+  <p><a href="{% url 'edit_machine' machine.pk %}">Редактировать</a></p>
+{% endif %}
+
+{% if user.is_authenticated and user.groups.first.name == 'Менеджер' %}
+  <form method="post" action="{% url 'delete_machine' machine.pk %}" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" onclick="return confirm('Точно удалить?')">Удалить</button>
+  </form>
+{% endif %}
+
+
 <table border="1">
   <tr><td>Модель</td><td>{{ machine.model }}</td></tr>
   <tr><td>Заводской №</td><td>{{ machine.serial_number }}</td></tr>

@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import (Machine, Maintenance, Claim, ModelType, EngineModel, TransmissionModel, 
                      DriveAxleModel, SteeredAxleModel, TOType, ServiceCompany, FailureNode, RecoveryMethod)
@@ -95,6 +95,34 @@ def machine_search(request):
         'query': query,
         'not_found': not_found,
     })
+
+@login_required
+def edit_machine(request, pk):
+    user = request.user
+    if not user.groups.filter(name='Менеджер').exists():
+        return HttpResponseForbidden("Нет доступа")
+
+    machine = get_object_or_404(Machine, pk=pk)
+
+    if request.method == 'POST':
+        form = MachineForm(request.POST, instance=machine)
+        if form.is_valid():
+            form.save()
+            return redirect('machine_detail', pk=pk)
+    else:
+        form = MachineForm(instance=machine)
+
+    return render(request, 'core/edit_machine.html', {'form': form, 'machine': machine})
+
+@login_required
+def delete_machine(request, pk):
+    user = request.user
+    if not user.groups.filter(name='Менеджер').exists():
+        return HttpResponseForbidden("Нет доступа")
+
+    machine = get_object_or_404(Machine, pk=pk)
+    machine.delete()
+    return redirect('machine_list')
 
 
 # ------------------------
