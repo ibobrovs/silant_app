@@ -1,5 +1,5 @@
 from django import forms
-from .models import Maintenance, Claim
+from .models import Maintenance, Claim, Machine
 
 class MaintenanceForm(forms.ModelForm):
     class Meta:
@@ -9,4 +9,9 @@ class MaintenanceForm(forms.ModelForm):
 class ClaimForm(forms.ModelForm):
     class Meta:
         model = Claim
+        fields = '__all__'
+
+class MachineForm(forms.ModelForm):
+    class Meta:
+        model = Machine
         fields = '__all__'

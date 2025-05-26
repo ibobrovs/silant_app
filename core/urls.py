@@ -9,14 +9,15 @@ urlpatterns = [
     
     path('machines/', views.machine_list, name='machine_list'),
     path('machines/<int:pk>/', views.machine_detail, name='machine_detail'),
+    path('machines/add/', views.add_machine, name='add_machine'),
 
     path('maintenance/', views.maintenance_list, name='maintenance_list'),
     path('maintenance/<int:pk>/', views.maintenance_detail, name='maintenance_detail'),
+    path('maintenance/add/', views.add_maintenance, name='add_maintenance'),
+
 
     path('claims/', views.claim_list, name='claim_list'),
     path('claims/<int:pk>/', views.claim_detail, name='claim_detail'),
-
-    path('maintenance/add/', views.add_maintenance, name='add_maintenance'),
     path('claims/add/', views.add_claim, name='add_claim'),
 
 ]

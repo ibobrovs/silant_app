@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import (Machine, Maintenance, Claim, ModelType, EngineModel, TransmissionModel, 
                      DriveAxleModel, SteeredAxleModel, TOType, ServiceCompany, FailureNode, RecoveryMethod)
 from django.http import HttpResponseForbidden
-from .forms import MaintenanceForm, ClaimForm
+from .forms import MaintenanceForm, ClaimForm, MachineForm
 
 def index(request):
     return render(request, 'core/index.html')
@@ -61,6 +61,24 @@ def machine_list(request):
 def machine_detail(request, pk):
     machine = get_object_or_404(Machine, pk=pk)
     return render(request, 'core/machine_detail.html', {'machine': machine})
+
+@login_required
+def add_machine(request):
+    user = request.user
+
+    # Только для менеджеров
+    if not user.groups.filter(name='Менеджер').exists():
+        return HttpResponseForbidden("У вас нет прав на добавление машин.")
+
+    if request.method == 'POST':
+        form = MachineForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('machine_list')
+    else:
+        form = MachineForm()
+
+    return render(request, 'core/add_machine.html', {'form': form})
 
 def machine_search(request):
     query = request.GET.get('serial')

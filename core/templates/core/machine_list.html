@@ -1,5 +1,10 @@
 <h2>Список машин</h2>
 
+{% if user.is_authenticated and user.groups.first.name == 'Менеджер' %}
+  <p><a href="{% url 'add_machine' %}">Добавить машину</a></p>
+{% endif %}
+
+
 <form method="get">
   <label>Модель техники:</label>
   <select name="model">
