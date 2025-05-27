@@ -1,0 +1,9 @@
+{% if user.is_authenticated and (
+      user.groups.first.name == 'Клиент' and item.machine.client == user or
+      user.groups.first.name == 'Сервисная организация' and item.machine.service_company == user or
+      user.groups.first.name == 'Менеджер'
+   ) %}
+  <p><a href="{% url 'edit_maintenance' item.pk %}">Редактировать</a></p>
+{% endif %}
+
+

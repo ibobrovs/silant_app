@@ -152,11 +152,6 @@ def maintenance_list(request):
     return render(request, 'core/maintenance_list.html', context)
 
 @login_required
-def maintenance_detail(request, pk):
-    item = get_object_or_404(Maintenance, pk=pk)
-    return render(request, 'core/maintenance_detail.html', {'item': item})
-
-@login_required
 def add_maintenance(request):
     user = request.user
 
@@ -180,6 +175,36 @@ def add_maintenance(request):
         form = MaintenanceForm()
 
     return render(request, 'core/add_maintenance.html', {'form': form})
+
+@login_required
+def maintenance_detail(request, pk):
+    item = get_object_or_404(Maintenance, pk=pk)
+    return render(request, 'core/maintenance_detail.html', {'item': item})
+
+
+@login_required
+def edit_maintenance(request, pk):
+    user = request.user
+    maintenance = get_object_or_404(Maintenance, pk=pk)
+
+    if user.groups.filter(name='Клиент').exists() and maintenance.machine.client != user:
+        return HttpResponseForbidden("Вы не можете редактировать ТО.")
+
+    if user.groups.filter(name='Сервисная организация').exists() and maintenance.machine.service_company != user:
+        return HttpResponseForbidden("Вы не можете редактировать ТО.")
+
+    if not user.groups.filter(name__in=['Клиент', 'Сервисная организация', 'Менеджер']).exists():
+        return HttpResponseForbidden("Нет прав доступа.")
+
+    if request.method == 'POST':
+        form = MaintenanceForm(request.POST, instance=maintenance)
+        if form.is_valid():
+            form.save()
+            return redirect('maintenance_detail', pk=pk)
+    else:
+        form = MaintenanceForm(instance=maintenance)
+
+    return render(request, 'core/edit_maintenance.html', {'form': form, 'item': maintenance})
 
 # ------------------------
 #     РЕКЛАМАЦИИ
