@@ -1,0 +1,9 @@
+<h2>Редактировать рекламацию</h2>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Сохранить</button>
+</form>
+
+<p><a href="{% url 'claim_detail' item.pk %}">Назад</a></p>

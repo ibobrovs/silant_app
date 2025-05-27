@@ -21,5 +21,7 @@ urlpatterns = [
     path('claims/', views.claim_list, name='claim_list'),
     path('claims/<int:pk>/', views.claim_detail, name='claim_detail'),
     path('claims/add/', views.add_claim, name='add_claim'),
+    path('claims/<int:pk>/edit/', views.edit_claim, name='edit_claim'),
+
 
 ]

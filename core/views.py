@@ -262,6 +262,30 @@ def add_claim(request):
 
     return render(request, 'core/add_claim.html', {'form': form})
 
+login_required
+def edit_claim(request, pk):
+    user = request.user
+    claim = get_object_or_404(Claim, pk=pk)
+
+    if user.groups.filter(name='Клиент').exists() and claim.machine.client != user:
+        return HttpResponseForbidden("Вы не можете редактировать чужую рекламацию.")
+
+    if user.groups.filter(name='Сервисная организация').exists() and claim.machine.service_company != user:
+        return HttpResponseForbidden("Вы не можете редактировать чужую рекламацию.")
+
+    if not user.groups.filter(name__in=['Клиент', 'Сервисная организация', 'Менеджер']).exists():
+        return HttpResponseForbidden("Нет прав доступа.")
+
+    if request.method == 'POST':
+        form = ClaimForm(request.POST, instance=claim)
+        if form.is_valid():
+            form.save()
+            return redirect('claim_detail', pk=pk)
+    else:
+        form = ClaimForm(instance=claim)
+
+    return render(request, 'core/edit_claim.html', {'form': form, 'item': claim})
+
 # ------------------------
 #     Роли (пример)
 # ------------------------
