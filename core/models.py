@@ -37,6 +37,7 @@ class Machine(models.Model):
     additional_equipment = models.TextField(blank=True)
     client = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='machines_as_client')
     service_company = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='machines_as_service')
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.model} SN: {self.serial_number}"
@@ -50,6 +51,7 @@ class Maintenance(models.Model):
     order_date = models.DateField()
     service_company = models.ForeignKey(ServiceCompany, on_delete=models.SET_NULL, null=True)
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
 
 # Рекламации
 class Claim(models.Model):
@@ -62,6 +64,7 @@ class Claim(models.Model):
     recovery_date = models.DateField()
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     service_company = models.ForeignKey(ServiceCompany, on_delete=models.SET_NULL, null=True)
+    is_active = models.BooleanField(default=True)
 
     def downtime(self):
         return (self.recovery_date - self.date).days

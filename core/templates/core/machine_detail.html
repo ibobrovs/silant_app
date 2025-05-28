@@ -11,6 +11,13 @@
   </form>
 {% endif %}
 
+{% if user.groups.first.name == 'Менеджер' %}
+  <form method="post" action="{% url 'delete_machine' machine.pk %}">
+    {% csrf_token %}
+    <button type="submit" onclick="return confirm('Подтвердите удаление')">Удалить</button>
+  </form>
+{% endif %}
+
 
 <table border="1">
   <tr><td>Модель</td><td>{{ machine.model }}</td></tr>

@@ -12,6 +12,8 @@ def index(request):
 # ------------------------
 #     МАШИНЫ
 # ------------------------
+machines = Machine.objects.filter(is_active=True).order_by('shipment_date')
+
 @login_required
 def machine_list(request):
     user = request.user
@@ -124,10 +126,23 @@ def delete_machine(request, pk):
     machine.delete()
     return redirect('machine_list')
 
+@login_required
+def delete_machine(request, pk):
+    user = request.user
+    if not user.groups.filter(name='Менеджер').exists():
+        return HttpResponseForbidden("Нет прав")
+
+    machine = get_object_or_404(Machine, pk=pk)
+    machine.is_active = False
+    machine.save()
+    return redirect('machine_list')
 
 # ------------------------
 #     ТЕХОБСЛУЖИВАНИЕ
 # ------------------------
+maintenance = Maintenance.objects.filter(is_active=True).order_by('date')
+
+
 @login_required
 def maintenance_list(request):
     maintenance = Maintenance.objects.all().order_by('date')
@@ -209,6 +224,8 @@ def edit_maintenance(request, pk):
 # ------------------------
 #     РЕКЛАМАЦИИ
 # ------------------------
+claims = Claim.objects.filter(is_active=True).order_by('date')
+
 @login_required
 def claim_list(request):
     claims = Claim.objects.all().order_by('date')
