@@ -1,3 +1,5 @@
+{% extends 'core/base.html' %}
+
 <h2>Список машин</h2>
 
 {% if user.is_authenticated and user.groups.first.name == 'Менеджер' %}

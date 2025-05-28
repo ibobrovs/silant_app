@@ -1,10 +1,9 @@
-{% extends "base.html" %}
+{% extends 'core/base.html' %}
+
 {% block content %}
+
   <h1>Добро пожаловать в "Мой Силант"</h1>
-  {% if user.is_authenticated %}
-    <p>Вы вошли как {{ user.username }}</p>
-    <p><a href="{% url 'logout' %}">Выйти</a></p>
-  {% else %}
-    <p><a href="{% url 'login' %}">Войти</a></p>
-  {% endif %}
+    <p>Это сервис для отслеживания состояния вашей техники.</p>
+
+
 {% endblock %}
