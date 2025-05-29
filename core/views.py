@@ -88,7 +88,7 @@ def machine_search(request):
     not_found = False
 
     if query:
-        machine = Machine.objects.filter(serial_number=query).first()
+        machine = Machine.objects.filter(serial_number=query, is_active=True).first()
         if not machine:
             not_found = True
 
@@ -115,16 +115,6 @@ def edit_machine(request, pk):
         form = MachineForm(instance=machine)
 
     return render(request, 'core/edit_machine.html', {'form': form, 'machine': machine})
-
-@login_required
-def delete_machine(request, pk):
-    user = request.user
-    if not user.groups.filter(name='Менеджер').exists():
-        return HttpResponseForbidden("Нет доступа")
-
-    machine = get_object_or_404(Machine, pk=pk)
-    machine.delete()
-    return redirect('machine_list')
 
 @login_required
 def delete_machine(request, pk):

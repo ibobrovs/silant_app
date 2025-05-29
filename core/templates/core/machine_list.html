@@ -1,71 +1,93 @@
 {% extends 'core/base.html' %}
 
+{% block content %}
 <h2>Список машин</h2>
 
-{% if user.is_authenticated and user.groups.first.name == 'Менеджер' %}
-  <p><a href="{% url 'add_machine' %}">Добавить машину</a></p>
-{% endif %}
+<!-- 🔍 Фильтр -->
+<form method="get" class="row row-cols-lg-auto g-3 align-items-center mb-4">
+  <div class="col">
+    <select name="model" class="form-select">
+      <option value="">Модель</option>
+      {% for item in models %}
+        <option value="{{ item.id }}" {% if selected.model == item.id|stringformat:"s" %}selected{% endif %}>{{ item.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
 
+  <div class="col">
+    <select name="engine" class="form-select">
+      <option value="">Двигатель</option>
+      {% for item in engines %}
+        <option value="{{ item.id }}" {% if selected.engine == item.id|stringformat:"s" %}selected{% endif %}>{{ item.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
 
-<form method="get">
-  <label>Модель техники:</label>
-  <select name="model">
-    <option value="">-- все --</option>
-    {% for item in models %}
-      <option value="{{ item.id }}" {% if selected.model == item.id|stringformat:"s" %}selected{% endif %}>{{ item.name }}</option>
-    {% endfor %}
-  </select>
+  <div class="col">
+    <select name="transmission" class="form-select">
+      <option value="">Трансмиссия</option>
+      {% for item in transmissions %}
+        <option value="{{ item.id }}" {% if selected.transmission == item.id|stringformat:"s" %}selected{% endif %}>{{ item.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
 
-  <label>Двигатель:</label>
-  <select name="engine">
-    <option value="">-- все --</option>
-    {% for item in engines %}
-      <option value="{{ item.id }}" {% if selected.engine == item.id|stringformat:"s" %}selected{% endif %}>{{ item.name }}</option>
-    {% endfor %}
-  </select>
+  <div class="col">
+    <select name="drive_axle" class="form-select">
+      <option value="">Ведущий мост</option>
+      {% for item in drive_axles %}
+        <option value="{{ item.id }}" {% if selected.drive_axle == item.id|stringformat:"s" %}selected{% endif %}>{{ item.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
 
-  <label>Трансмиссия:</label>
-  <select name="transmission">
-    <option value="">-- все --</option>
-    {% for item in transmissions %}
-      <option value="{{ item.id }}" {% if selected.transmission == item.id|stringformat:"s" %}selected{% endif %}>{{ item.name }}</option>
-    {% endfor %}
-  </select>
+  <div class="col">
+    <select name="steered_axle" class="form-select">
+      <option value="">Управляемый мост</option>
+      {% for item in steered_axles %}
+        <option value="{{ item.id }}" {% if selected.steered_axle == item.id|stringformat:"s" %}selected{% endif %}>{{ item.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
 
-  <label>Ведущий мост:</label>
-  <select name="drive_axle">
-    <option value="">-- все --</option>
-    {% for item in drive_axles %}
-      <option value="{{ item.id }}" {% if selected.drive_axle == item.id|stringformat:"s" %}selected{% endif %}>{{ item.name }}</option>
-    {% endfor %}
-  </select>
-
-  <label>Управляемый мост:</label>
-  <select name="steered_axle">
-    <option value="">-- все --</option>
-    {% for item in steered_axles %}
-      <option value="{{ item.id }}" {% if selected.steered_axle == item.id|stringformat:"s" %}selected{% endif %}>{{ item.name }}</option>
-    {% endfor %}
-  </select>
-
-  <button type="submit">Фильтр</button>
+  <div class="col">
+    <button type="submit" class="btn btn-primary">Фильтр</button>
+  </div>
 </form>
 
-<table border="1">
-  <thead>
-    <tr>
-      <th>Модель</th>
-      <th>Зав. номер</th>
-      <th>Дата отгрузки</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for machine in machines %}
-      <tr onclick="window.location.href='{% url "machine_detail" machine.pk %}'" style="cursor: pointer;">
-        <td>{{ machine.model }}</td>
-        <td>{{ machine.serial_number }}</td>
-        <td>{{ machine.shipment_date }}</td>
+<!-- 📋 Таблица -->
+<div class="table-responsive">
+  <table class="table table-hover table-bordered">
+    <thead class="table-light">
+      <tr>
+        <th>Модель</th>
+        <th>Серийный номер</th>
+        <th>Дата отгрузки</th>
+        <th>Двигатель</th>
+        <th>Трансмиссия</th>
+        <th>Ведущий мост</th>
+        <th>Управляемый мост</th>
+        <th>Место использования</th>
+        <th>Сервисная компания</th>
       </tr>
-    {% endfor %}
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      {% for machine in machines %}
+        <tr onclick="window.location='{% url 'machine_detail' machine.pk %}'" style="cursor:pointer;">
+          <td>{{ machine.model.name }}</td>
+          <td>{{ machine.serial_number }}</td>
+          <td>{{ machine.shipment_date|date:"d.m.Y" }}</td>
+          <td>{{ machine.engine_model.name }}</td>
+          <td>{{ machine.transmission_model.name }}</td>
+          <td>{{ machine.drive_axle_model.name }}</td>
+          <td>{{ machine.steered_axle_model.name }}</td>
+          <td>{{ machine.usage_place }}</td>
+          <td>{{ machine.service_company.name }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="9">Нет данных.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

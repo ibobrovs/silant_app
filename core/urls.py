@@ -12,6 +12,7 @@ urlpatterns = [
     path('machines/add/', views.add_machine, name='add_machine'),
     path('machines/<int:pk>/edit/', views.edit_machine, name='edit_machine'),
     path('machines/<int:pk>/delete/', views.delete_machine, name='delete_machine'),
+    path('search/', views.machine_search, name='machine_search'),
 
     path('maintenance/', views.maintenance_list, name='maintenance_list'),
     path('maintenance/<int:pk>/', views.maintenance_detail, name='maintenance_detail'),

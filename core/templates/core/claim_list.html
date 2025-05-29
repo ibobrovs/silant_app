@@ -1,37 +1,71 @@
 {% extends 'core/base.html' %}
 
-<h2>Список рекламаций</h2>
+{% block content %}
+<h2>Рекламации</h2>
 
+<!-- Фильтры -->
+<form method="get" class="row row-cols-lg-auto g-3 align-items-center mb-4">
+  <div class="col">
+    <select name="failure_node" class="form-select">
+      <option value="">Узел отказа</option>
+      {% for item in nodes %}
+        <option value="{{ item.id }}" {% if selected.failure_node == item.id|stringformat:"s" %}selected{% endif %}>{{ item.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
 
-{% if user.is_authenticated and (user.groups|length > 0) %}
-  <p><a href="{% url 'add_claim' %}">Добавить рекламацию</a></p>
-{% endif %}
+  <div class="col">
+    <select name="recovery_method" class="form-select">
+      <option value="">Способ восстановления</option>
+      {% for item in methods %}
+        <option value="{{ item.id }}" {% if selected.recovery_method == item.id|stringformat:"s" %}selected{% endif %}>{{ item.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
 
+  <div class="col">
+    <select name="service" class="form-select">
+      <option value="">Сервисная компания</option>
+      {% for item in services %}
+        <option value="{{ item.id }}" {% if selected.service == item.id|stringformat:"s" %}selected{% endif %}>{{ item.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
 
-<form method="get">
-  <label>Узел отказа:</label>
-  <select name="failure_node">
-    <option value="">-- все --</option>
-    {% for item in nodes %}
-      <option value="{{ item.id }}" {% if selected.failure_node == item.id|stringformat:"s" %}selected{% endif %}>{{ item.name }}</option>
-    {% endfor %}
-  </select>
-
-  <label>Способ восстановления:</label>
-  <select name="recovery_method">
-    <option value="">-- все --</option>
-    {% for item in methods %}
-      <option value="{{ item.id }}" {% if selected.recovery_method == item.id|stringformat:"s" %}selected{% endif %}>{{ item.name }}</option>
-    {% endfor %}
-  </select>
-
-  <label>Сервисная компания:</label>
-  <select name="service">
-    <option value="">-- все --</option>
-    {% for item in services %}
-      <option value="{{ item.id }}" {% if selected.service == item.id|stringformat:"s" %}selected{% endif %}>{{ item.name }}</option>
-    {% endfor %}
-  </select>
-
-  <button type="submit">Фильтр</button>
+  <div class="col">
+    <button type="submit" class="btn btn-primary">Фильтр</button>
+  </div>
 </form>
+
+<!-- Таблица -->
+<div class="table-responsive">
+  <table class="table table-hover table-bordered">
+    <thead class="table-light">
+      <tr>
+        <th>Машина</th>
+        <th>Дата отказа</th>
+        <th>Узел отказа</th>
+        <th>Описание отказа</th>
+        <th>Способ восстановления</th>
+        <th>Сервисная компания</th>
+        <th>Дата восстановления</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in claims %}
+        <tr onclick="window.location='{% url 'claim_detail' item.pk %}'" style="cursor:pointer;">
+          <td>{{ item.machine.serial_number }}</td>
+          <td>{{ item.date|date:"d.m.Y" }}</td>
+          <td>{{ item.failure_node.name }}</td>
+          <td>{{ item.failure_description|truncatechars:80 }}</td>
+          <td>{{ item.recovery_method.name }}</td>
+          <td>{{ item.service_company.name }}</td>
+          <td>{{ item.recovery_date|date:"d.m.Y" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="7">Нет данных.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
