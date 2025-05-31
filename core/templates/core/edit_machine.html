@@ -1,5 +1,7 @@
 {% extends 'core/base.html' %}
 
+{% block content %}
+
 <h2>Редактировать машину</h2>
 
 <form method="post">
@@ -10,3 +12,4 @@
 
 <p><a href="{% url 'machine_detail' machine.pk %}">Назад</a></p>
 
+{% endblock %}

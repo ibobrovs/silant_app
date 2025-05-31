@@ -14,4 +14,26 @@ class ClaimForm(forms.ModelForm):
 class MachineForm(forms.ModelForm):
     class Meta:
         model = Machine
-        fields = '__all__'
+        fields = [
+            'serial_number',
+            'model',
+            'engine_model',
+            'engine_serial',
+            'transmission_model',
+            'transmission_serial',
+            'drive_axle_model',
+            'drive_axle_serial',
+            'steered_axle_model',
+            'steered_axle_serial',
+            'supply_contract',
+            'shipment_date',
+            'customer',
+            'location',
+            'additional_equipment',
+            'client',
+            'service_company',
+        ]
+        widgets = {
+            'shipment_date': forms.DateInput(attrs={'type': 'date'}),
+            'additional_equipment': forms.Textarea(attrs={'rows': 4}),
+        }

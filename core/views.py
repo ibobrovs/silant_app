@@ -300,10 +300,6 @@ def edit_claim(request, pk):
 def is_manager(user):
     return user.groups.filter(name='Менеджер').exists()
 
-@user_passes_test(is_manager)
-def edit_machine(request, pk):
-
-    ...
 
 def is_client(user):
     return user.groups.filter(name='Клиент').exists()
