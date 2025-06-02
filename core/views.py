@@ -4,6 +4,12 @@ from .models import (Machine, Maintenance, Claim, ModelType, EngineModel, Transm
                      DriveAxleModel, SteeredAxleModel, TOType, ServiceCompany, FailureNode, RecoveryMethod)
 from django.http import HttpResponseForbidden
 from .forms import MaintenanceForm, ClaimForm, MachineForm
+from rest_framework import viewsets
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from .serializers import MachineSerializer, MaintenanceSerializer, ClaimSerializer
+
 
 def index(request):
     return render(request, 'core/index.html')
@@ -300,7 +306,6 @@ def edit_claim(request, pk):
 def is_manager(user):
     return user.groups.filter(name='Менеджер').exists()
 
-
 def is_client(user):
     return user.groups.filter(name='Клиент').exists()
 
@@ -308,3 +313,41 @@ def is_client(user):
 def client_dashboard(request):
     ...
 
+class MachineAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        machines = Machine.objects.filter(is_active=True)
+        serializer = MachineSerializer(machines, many=True)
+        return Response(serializer.data)
+    
+class MaintenanceAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        maintenance = Maintenance.objects.filter(is_active=True)
+        serializer = MaintenanceSerializer(maintenance, many=True)
+        return Response(serializer.data)
+    
+class ClaimAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        claims = Claim.objects.filter(is_active=True)
+        serializer = ClaimSerializer(claims, many=True)
+        return Response(serializer.data)
+    
+class MachineViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Machine.objects.filter(is_active=True)
+    serializer_class = MachineSerializer
+    permission_classes = [IsAuthenticated]
+
+class MaintenanceViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Maintenance.objects.filter(is_active=True)
+    serializer_class = MaintenanceSerializer
+    permission_classes = [IsAuthenticated]
+
+class ClaimViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Claim.objects.filter(is_active=True)
+    serializer_class = ClaimSerializer
+    permission_classes = [IsAuthenticated]

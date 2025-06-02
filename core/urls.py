@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
+from .views import MachineAPI, MaintenanceAPI, ClaimAPI, MachineViewSet, MaintenanceViewSet, ClaimViewSet
+from rest_framework.routers import DefaultRouter
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -23,6 +25,17 @@ urlpatterns = [
     path('claims/<int:pk>/', views.claim_detail, name='claim_detail'),
     path('claims/add/', views.add_claim, name='add_claim'),
     path('claims/<int:pk>/edit/', views.edit_claim, name='edit_claim'),
-
-
 ]
+
+urlpatterns += [
+    path('api/machines/', MachineAPI.as_view(), name='api_machines'),
+    path('api/maintenance/', MaintenanceAPI.as_view(), name='api_maintenance'),
+    path('api/claims/', ClaimAPI.as_view(), name='api_claims'),
+]
+
+router = DefaultRouter()
+router.register(r'api/machines', MachineViewSet, basename='api_machines')
+router.register(r'api/maintenance', MaintenanceViewSet, basename='api_maintenance')
+router.register(r'api/claims', ClaimViewSet, basename='api_claims')
+
+urlpatterns += router.urls
