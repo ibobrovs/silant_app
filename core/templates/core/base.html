@@ -38,9 +38,11 @@
       <div>
         {% if user.is_authenticated %}
           <span class="me-3">Здравствуйте, {{ user.username }}</span>
-          <a href="{% url 'logout' %}" class="btn btn-sm btn-danger">Выход</a>
         {% else %}
-          <a href="{% url 'login' %}" class="btn btn-sm btn-light">Вход</a>
+          <form method="post" action="{% url 'logout' %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-danger">Выход</button>
+          </form>
         {% endif %}
       </div>
     </div>

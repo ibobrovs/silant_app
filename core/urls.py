@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, reverse_lazy
 from . import views
 from django.contrib.auth import views as auth_views
 from .views import MachineAPI, MaintenanceAPI, ClaimAPI, MachineViewSet, MaintenanceViewSet, ClaimViewSet
@@ -7,8 +7,8 @@ from rest_framework.routers import DefaultRouter
 urlpatterns = [
     path('', views.index, name='index'),
     path('login/', auth_views.LoginView.as_view(template_name='core/login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
-
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    
     path('machines/', views.machine_list, name='machine_list'),
     path('machines/<int:pk>/', views.machine_detail, name='machine_detail'),
     path('machines/add/', views.add_machine, name='add_machine'),

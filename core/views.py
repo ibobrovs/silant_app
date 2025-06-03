@@ -9,6 +9,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .serializers import MachineSerializer, MaintenanceSerializer, ClaimSerializer
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 
 def index(request):
@@ -341,13 +343,19 @@ class MachineViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Machine.objects.filter(is_active=True)
     serializer_class = MachineSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['model', 'engine_model', 'transmission_model', 'drive_axle_model', 'steered_axle_model']
 
 class MaintenanceViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Maintenance.objects.filter(is_active=True)
     serializer_class = MaintenanceSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['type', 'machine__serial_number', 'service_company']
 
 class ClaimViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Claim.objects.filter(is_active=True)
     serializer_class = ClaimSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['failure_node', 'recovery_method', 'service_company']
