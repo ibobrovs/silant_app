@@ -1,32 +1,36 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-  <h2>Поиск машины по заводскому номеру</h2>
 
-  <form method="get" class="mb-4">
+<h2>Поиск машины по заводскому номеру</h2>
+
+<form method="get" class="mb-4">
     <div class="input-group">
-      <input type="text" name="serial" class="form-control" placeholder="Введите заводской номер" value="{{ query }}">
-      <button type="submit" class="btn btn-primary">Поиск</button>
+        <input type="text" name="serial" class="form-control" placeholder="Введите заводской номер" value="{{ query|default_if_none:'' }}">
+        <button type="submit" class="btn btn-primary">Поиск</button>
     </div>
-  </form>
+</form>
 
-  {% if machine %}
+
+{% if machine %}
     <h5>Результаты:</h5>
     <table class="table table-bordered">
-      <tr><th>Модель</th><td>{{ machine.model }}</td></tr>
-      <tr><th>Зав. номер</th><td>{{ machine.serial_number }}</td></tr>
-      <tr><th>Двигатель</th><td>{{ machine.engine_model }}</td></tr>
-      <tr><th>Трансмиссия</th><td>{{ machine.transmission_model }}</td></tr>
-      <tr><th>Ведущий мост</th><td>{{ machine.drive_axle_model }}</td></tr>
-      <tr><th>Управляемый мост</th><td>{{ machine.steered_axle_model }}</td></tr>
-      <tr><th>Место эксплуатации</th><td>{{ machine.usage_place }}</td></tr>
-      <tr><th>Сервисная компания</th><td>{{ machine.service_company }}</td></tr>
-      <tr><th>Дата отгрузки</th><td>{{ machine.shipment_date }}</td></tr>
-      <tr><th>Описание</th><td>{{ machine.description }}</td></tr>
+        <tr><th>Модель:</th><td>{{ machine.model }}</td></tr>
+        <tr><th>Зав. номер:</th><td>{{ machine.serial_number }}</td></tr>
+        <tr><th>Двигатель:</th><td>{{ machine.engine_model }}</td></tr>
+        <tr><th>Трансмиссия:</th><td>{{ machine.transmission_model }}</td></tr>
+        <tr><th>Ведущий мост:</th><td>{{ machine.drive_axle_model }}</td></tr>
+        <tr><th>Управляемый мост:</th><td>{{ machine.steered_axle_model }}</td></tr>
+        <tr><th>Место эксплуатации:</th><td>{{ machine.location }}</td></tr>
+        <tr><th>Сервисная компания:</th><td>{{ machine.service_company }}</td></tr>
+        <tr><th>Дата отгрузки:</th><td>{{ machine.shipment_date }}</td></tr>
+        <tr><th>Описание:</th><td>{{ machine.description }}</td></tr>
     </table>
-  {% elif query %}
+
+{% elif query %}
     <div class="alert alert-danger">
-      Данных о машине с таким заводским номером нет в системе.
+        Данных о машине с таким заводским номером нет в системе.
     </div>
-  {% endif %}
+{% endif %}
+
 {% endblock %}
