@@ -1,11 +1,17 @@
 {% extends 'core/base.html' %}
 
-<h2>Добавление ТО</h2>
+{% block content %}
+<h2 class="text-center mb-4">Редактировать ТО</h2>
 
-<form method="post">
+<form method="post" class="card p-4 shadow">
   {% csrf_token %}
   {{ form.as_p }}
-  <button type="submit">Сохранить</button>
+  <div class="text-center mt-3">
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+  </div>
 </form>
 
-<p><a href="{% url 'maintenance_list' %}">Назад</a></p>
+<p class="mt-4 text-center">
+  <a href="{% url 'maintenance_list' %}" class="btn btn-secondary">← Назад к списку ТО</a>
+</p>
+{% endblock %}

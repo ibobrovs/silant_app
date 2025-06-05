@@ -136,7 +136,7 @@ def delete_machine(request, pk):
     return redirect('machine_list')
 
 # ------------------------
-#     ТЕХОБСЛУЖИВАНИЕ
+#     ОБСЛУЖИВАНИЕ
 # ------------------------
 maintenance = Maintenance.objects.filter(is_active=True).order_by('date')
 
@@ -302,7 +302,7 @@ def edit_claim(request, pk):
     return render(request, 'core/edit_claim.html', {'form': form, 'item': claim})
 
 # ------------------------
-#     Роли (пример)
+#     РОЛИ
 # ------------------------
 
 def is_manager(user):
